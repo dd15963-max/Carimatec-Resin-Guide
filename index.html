@@ -18,6 +18,7 @@
         .font-bold { font-weight: 700 !important; }
         .material-btn:hover { filter: brightness(0.9); }
         
+        /* 투명/클리어 디자인 */
         .color-dot-clear {
             background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
             position: relative;
@@ -154,7 +155,6 @@
                 rigid: { idx: 0, zoomMax: 10, title: 'Rigid V2 Black', tag: '고강성/정적모델', ...colorThemes.blue, features: '· 높은 강성과 치수 안정성\n· 외부 힘에 의한 변형이 거의 없는 단단함', apps: '정적 전시 모델, 검사용 지그, 정밀 케이스.', stats: { visc: '2822', modulus: '2859', strength: '80.8', elongation: '6.4', impact: '41.5', hardness: '74.5', color: 'Black', unit: 'D' }, chart: [{x: 0, y: 0}, {x: 2, y: 60}, {x: 4, y: 82}, {x: 6.4, y: 80.8}] },
                 toughi: { idx: 1, zoomMax: 20, title: 'Tough V2 I Black', tag: '강도/내충격', ...colorThemes.orange, features: '· 높은 강성과 강도\n· 충격에 강한 모델링 출력에 적합', apps: '기능성 시제품, 인클로저, 보호용 커버.', stats: { visc: '1000', modulus: '2155', strength: '71.5', elongation: '10.4', impact: '43.7', hardness: '61.0', color: 'Black', unit: 'D' }, chart: [{x: 0, y: 0}, {x: 3, y: 55}, {x: 6, y: 72}, {x: 10.4, y: 50}] },
                 toughe: { idx: 2, zoomMax: 120, title: 'Tough V2 E Black', tag: '유연/내구성', ...colorThemes.green, features: '· 높은 유연성 및 내구성\n· 반복적인 구동이나 구부림에도 파손되지 않음', apps: '리빙 힌지, 스냅핏 조인트, 반복 체결용 클립.', stats: { visc: '700', modulus: '984', strength: '34.5', elongation: '100.6', impact: '76.1', hardness: '56.5', color: 'Black', unit: 'D' }, chart: [{x: 0, y: 0}, {x: 10, y: 35}, {x: 60, y: 28}, {x: 100.6, y: 34.5}] },
-                hard21: { idx: 3, zoomMax: 5, title: 'HARD21 Yellowish', tag: '초고강도/고정밀', ...colorThemes.yellow, features: '· 고강도의 소재로 외부의 힘에 낮은 변형률\n· 금속 가공품 대체 가능한 수준', apps: '소형 정밀 기어, 고부하 브라켓.', stats: { visc: '200', modulus: '4200', strength: '92', elongation: '2.8', impact: '-', hardness: '86', color: 'Yellowish', unit: 'D' }, chart: [{x: 0, y: 0}, {x: 1.5, y: 50}, {x: 2.8, y: 92.0}] },
                 elasto70: { idx: 4, zoomMax: 300, title: 'Elasto 70 Black', tag: '고탄성/저경도', ...colorThemes.sky, features: '· 고무와 같은 높은 탄성과 유연성\n· 우수한 충격 흡수율과 미끄럼 방지', apps: '가스켓, 씰, 완충용 패드.', stats: { visc: '5000', modulus: '40', strength: '6.6', elongation: '222.7', impact: '80.0', hardness: '78', color: 'Black', unit: 'A' }, chart: [{x: 0, y: 0}, {x: 100, y: 5}, {x: 222.7, y: 6.6}] },
                 elasto85: { idx: 5, zoomMax: 300, title: 'Elasto 85 Black', tag: '고탄성/내마모', ...colorThemes.pink, features: '· 강력한 물성의 고성능 1액형 탄성 소재\n· 반복 변형 시 복원력이 우수함', apps: '신발 밑창, 핸들 그립, 산업용 튜브.', stats: { visc: '5000', modulus: '58', strength: '8.0', elongation: '287.0', impact: '85.0', hardness: '85.5', color: 'Black', unit: 'A' }, chart: [{x: 0, y: 0}, {x: 100, y: 6}, {x: 287, y: 8.0}] }
             },
@@ -244,7 +244,7 @@
             const sortedIds = Object.keys(catData).sort((a,b) => catData[a].idx - catData[b].idx);
 
             if (currentCategory === 'engineering' && ctxSS) {
-                const ssDatasets = sortedIds.filter(id => id !== 'hard21').map(id => ({
+                const ssDatasets = sortedIds.map(id => ({
                     label: catData[id].title, borderColor: catData[id].borderColor, data: catData[id].chart || [], showLine: true, tension: 0.2, borderWidth: 3, pointRadius: 0
                 }));
                 if (mySSChart) mySSChart.destroy();
@@ -348,8 +348,7 @@
 
             const sortedIds = Object.keys(resinData[currentCategory]).sort((a,b) => resinData[currentCategory][a].idx - resinData[currentCategory][b].idx);
             if (currentCategory === 'engineering' && mySSChart) {
-                const ssSortedIds = sortedIds.filter(sid => sid !== 'hard21');
-                mySSChart.data.datasets.forEach((ds, i) => { if (mySSChart.data.datasets[i]) mySSChart.setDatasetVisibility(i, ssSortedIds[i] === id); });
+                mySSChart.data.datasets.forEach((ds, i) => { if (mySSChart.data.datasets[i]) mySSChart.setDatasetVisibility(i, sortedIds[i] === id); });
                 mySSChart.options.scales.x.max = data.zoomMax || 300; mySSChart.update();
                 document.getElementById('zoom-indicator').classList.toggle('hidden', (data.zoomMax || 300) >= 100);
             }
